@@ -4,6 +4,8 @@ import org.dataki.application.service.TaskProcessorService;
 import org.dataki.domain.model.Task;
 import org.dataki.domain.model.TaskStatus;
 import org.dataki.domain.port.output.TaskRepository;
+import org.dataki.infrastructure.persistence.entity.TaskEntity;
+import org.dataki.infrastructure.worker.TaskClaimService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -20,10 +22,12 @@ public class TaskWorker {
     private static final Logger logger = LoggerFactory.getLogger(TaskWorker.class);
     private final TaskRepository taskRepository;
     private final TaskProcessorService processorService;
+    private final TaskClaimService claimService;
 
-    public TaskWorker(TaskRepository taskRepository, TaskProcessorService processorService) {
+    public TaskWorker(TaskRepository taskRepository, TaskProcessorService processorService, TaskClaimService claimService) {
         this.taskRepository = taskRepository;
         this.processorService = processorService;
+        this.claimService = claimService;
     }
 
     /**
@@ -33,11 +37,24 @@ public class TaskWorker {
     public void processQueue() {
         logger.debug("TaskWorker: Checking for pending tasks...");
         
+        // Primero intentamos reclamar tareas de forma atómica (Postgres: FOR UPDATE SKIP LOCKED)
+        try {
+            List<TaskEntity> claimed = claimService.claimPendingTasks(10, java.time.LocalDateTime.now());
+            if (!claimed.isEmpty()) {
+                logger.info("TaskWorker: Claimed {} tasks for processing", claimed.size());
+                for (TaskEntity e : claimed) {
+                    processPendingTask(e.getId());
+                }
+                return;
+            }
+        } catch (Exception ex) {
+            logger.debug("TaskWorker: claim failed (falling back to polling): {}", ex.getMessage());
+        }
+
+        // Fallback: simple polling (H2 or environments without SKIP LOCKED)
         List<Task> pendingTasks = taskRepository.findPendingTasks();
-        
         if (!pendingTasks.isEmpty()) {
-            logger.info("TaskWorker: Found {} pending tasks", pendingTasks.size());
-            
+            logger.info("TaskWorker: Found {} pending tasks (fallback)", pendingTasks.size());
             for (Task task : pendingTasks) {
                 processPendingTask(task.getId());
             }

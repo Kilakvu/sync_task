@@ -1,6 +1,12 @@
 spring:
   application:
     name: sync-task-system
+  datasource:
+    # DB_HOST permite ejecutar la app desde el host (localhost) o desde un contenedor (DB_HOST=postgres)
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/taskdb
+    username: taskuser
+    password: taskpass123
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
@@ -8,7 +14,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  # Datasource must be provided by profile-specific config (e.g. application-postgresql.yml)
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -39,4 +45,3 @@ springdoc:
   api-docs:
     path: /v3/api-docs
   show-actuator: true
-
