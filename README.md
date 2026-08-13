@@ -1,5 +1,18 @@
 # Sistema de Procesamiento Asíncrono de Tareas - Arquitectura Hexagonal
 
+<div align="center">
+
+![CI](https://github.com/Kilakvu/sync_task/actions/workflows/ci.yml/badge.svg)
+![CodeQL](https://github.com/Kilakvu/sync_task/actions/workflows/codeql.yml/badge.svg)
+![Java 21](https://img.shields.io/badge/Java-21-6DB33F?logo=openjdk&logoColor=white)
+![Spring Boot 3.2](https://img.shields.io/badge/Spring%20Boot-3.2.0-6DB33F?logo=spring&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black)
+![MIT License](https://img.shields.io/badge/License-MIT-blue)
+
+</div>
+
 Un sistema empresarial de procesamiento de tareas asíncronas con arquitectura hexagonal, que implementa mejores prácticas de diseño de software.
 
 ## ️ Arquitectura
