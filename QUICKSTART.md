@@ -147,5 +147,4 @@ Instala el plugin de Lombok en tu IDE:
 - Consulta la documentación en los .md files
 - Crea una discusión para preguntas generales
 
-¡Que disfrutes desarrollando! 🚀
-
+¡Que disfrutes desarrollando! 

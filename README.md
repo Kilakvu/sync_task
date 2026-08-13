@@ -2,7 +2,7 @@
 
 Un sistema empresarial de procesamiento de tareas asíncronas con arquitectura hexagonal, que implementa mejores prácticas de diseño de software.
 
-## 🏗️ Arquitectura
+## ️ Arquitectura
 
 El proyecto implementa la arquitectura hexagonal (puertos y adaptadores) dividida en capas:
 
@@ -44,7 +44,7 @@ El proyecto implementa la arquitectura hexagonal (puertos y adaptadores) dividid
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Características
+##  Características
 
 ### 1. **Gestión de Tareas**
 - ✅ Crear tareas con payload personalizado
@@ -75,7 +75,7 @@ El proyecto implementa la arquitectura hexagonal (puertos y adaptadores) dividid
 - ✅ Logging completo en todos los niveles
 - ✅ Estados finales claros (COMPLETED o FAILED)
 
-## 📊 Estructura de Capas
+##  Estructura de Capas
 
 ### Domain Layer (`org.dataki.domain`)
 - **Models**: Task, TaskStatus, TaskPriority
@@ -96,7 +96,7 @@ El proyecto implementa la arquitectura hexagonal (puertos y adaptadores) dividid
 - **Scheduler**: Tareas programadas
 - **Config**: Configuración Spring
 
-## 🚀 Como Iniciar
+##  Como Iniciar
 
 ### Requisitos
 - Java 21+
@@ -114,7 +114,7 @@ mvn spring-boot:run
 
 La aplicación se iniciará en `http://localhost:8080`
 
-## 📡 API REST Endpoints
+##  API REST Endpoints
 
 ### Crear una Tarea
 ```
@@ -173,7 +173,7 @@ Estados válidos: PENDING, PROCESSING, COMPLETED, FAILED, RETRY, SCHEDULED
 GET /api/v1/tasks/queue/pending
 ```
 
-## 📋 Ejemplos de Uso
+##  Ejemplos de Uso
 
 ### 1. Crear una Tarea Inmediata
 ```bash
@@ -211,7 +211,7 @@ curl http://localhost:8080/api/v1/tasks/status/FAILED
 curl http://localhost:8080/api/v1/tasks/queue/pending
 ```
 
-## 🔄 Flujo de Procesamiento
+##  Flujo de Procesamiento
 
 ```
 1. Cliente POST /tasks
@@ -231,7 +231,7 @@ curl http://localhost:8080/api/v1/tasks/queue/pending
                                      Si agota reintentos: FAILED
 ```
 
-## 🗄️ Base de Datos
+## ️ Base de Datos
 
 Usa H2 en memoria para desarrollo:
 - **URL**: jdbc:h2:mem:taskdb
@@ -257,7 +257,7 @@ CREATE TABLE tasks (
 );
 ```
 
-## 🧪 Testing
+##  Testing
 
 El proyecto incluye dependencias de testing:
 - JUnit 5
@@ -269,7 +269,7 @@ Para ejecutar tests:
 mvn test
 ```
 
-## 📝 Logging
+##  Logging
 
 Niveles configurados en `application.yml`:
 - **ROOT**: INFO
@@ -277,7 +277,7 @@ Niveles configurados en `application.yml`:
 - **org.springframework.web**: INFO
 - **Hibernate SQL**: DEBUG
 
-## 🎓 Patrones y Mejores Prácticas
+##  Patrones y Mejores Prácticas
 
 1. **Arquitectura Hexagonal**: Independencia de frameworks
 2. **Domain-Driven Design**: Lógica de negocio centralizada
@@ -287,7 +287,7 @@ Niveles configurados en `application.yml`:
 6. **Error Handling**: Manejo granular de excepciones
 7. **Logging**: Trazabilidad completa
 
-## 🔮 Mejoras Futuras
+##  Mejoras Futuras
 
 - [ ] Mensaje broker (RabbitMQ, Kafka)
 - [ ] Persistencia con PostgreSQL
@@ -299,11 +299,10 @@ Niveles configurados en `application.yml`:
 - [ ] Circuit Breaker
 - [ ] Websockets para eventos en tiempo real
 
-## 📄 Licencia
+##  Licencia
 
 MIT License
 
-## 👤 Autor
+##  Autor
 
 Para portafolio backend - 2026
-

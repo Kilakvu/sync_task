@@ -1,96 +1,96 @@
 # Estructura del Proyecto
 
-## 📁 Árbol de Directorios
+##  Árbol de Directorios
 
 ```
 sync_task/
 │
-├── 📄 pom.xml                          # Configuración Maven y dependencias
-├── 📄 Dockerfile                       # Imagen Docker multi-stage
-├── 📄 docker-compose.yml               # Orquestación con PostgreSQL
+├──  pom.xml                          # Configuración Maven y dependencias
+├──  Dockerfile                       # Imagen Docker multi-stage
+├──  docker-compose.yml               # Orquestación con PostgreSQL
 │
-├── 📄 README.md                        # Documentación principal
-├── 📄 ARCHITECTURE.md                  # Guía de arquitectura hexagonal
-├── 📄 EXAMPLES.md                      # Ejemplos de uso de API
-├── 📄 QUICKSTART.md                    # Inicio rápido
-├── 📄 CONTRIBUTING.md                  # Guía de contribución
-├── 📄 PROJECT_SUMMARY.md               # Este archivo
+├──  README.md                        # Documentación principal
+├──  ARCHITECTURE.md                  # Guía de arquitectura hexagonal
+├──  EXAMPLES.md                      # Ejemplos de uso de API
+├──  QUICKSTART.md                    # Inicio rápido
+├──  CONTRIBUTING.md                  # Guía de contribución
+├──  PROJECT_SUMMARY.md               # Este archivo
 │
-├── 📁 src/
+├──  src/
 │   │
-│   ├── 📁 main/
+│   ├──  main/
 │   │   │
-│   │   ├── 📁 java/org/dataki/
+│   │   ├──  java/org/dataki/
 │   │   │   │
-│   │   │   ├── 📁 domain/              ← CAPA DE DOMINIO
-│   │   │   │   ├── 📁 model/
+│   │   │   ├──  domain/              ← CAPA DE DOMINIO
+│   │   │   │   ├──  model/
 │   │   │   │   │   ├── Task.java
 │   │   │   │   │   ├── TaskStatus.java
 │   │   │   │   │   └── TaskPriority.java
 │   │   │   │   │
-│   │   │   │   ├── 📁 port/
-│   │   │   │   │   ├── 📁 input/
+│   │   │   │   ├──  port/
+│   │   │   │   │   ├──  input/
 │   │   │   │   │   │   ├── CreateTaskUseCase.java
 │   │   │   │   │   │   └── RetrieveTaskUseCase.java
-│   │   │   │   │   └── 📁 output/
+│   │   │   │   │   └──  output/
 │   │   │   │   │       ├── TaskRepository.java
 │   │   │   │   │       └── TaskProcessor.java
 │   │   │   │   │
-│   │   │   │   └── 📁 service/
+│   │   │   │   └──  service/
 │   │   │   │       └── TaskDomainService.java
 │   │   │   │
-│   │   │   ├── 📁 application/         ← CAPA DE APLICACIÓN
-│   │   │   │   ├── 📁 dto/
+│   │   │   ├──  application/         ← CAPA DE APLICACIÓN
+│   │   │   │   ├──  dto/
 │   │   │   │   │   ├── CreateTaskRequest.java
 │   │   │   │   │   └── TaskResponse.java
 │   │   │   │   │
-│   │   │   │   ├── 📁 mapper/
+│   │   │   │   ├──  mapper/
 │   │   │   │   │   └── TaskMapper.java
 │   │   │   │   │
-│   │   │   │   └── 📁 service/
+│   │   │   │   └──  service/
 │   │   │   │       ├── CreateTaskService.java
 │   │   │   │       ├── RetrieveTaskService.java
 │   │   │   │       └── TaskProcessorService.java
 │   │   │   │
-│   │   │   ├── 📁 adapters/            ← ADAPTADORES DE ENTRADA
-│   │   │   │   └── 📁 controller/
+│   │   │   ├──  adapters/            ← ADAPTADORES DE ENTRADA
+│   │   │   │   └──  controller/
 │   │   │   │       └── TaskController.java
 │   │   │   │
-│   │   │   ├── 📁 infrastructure/      ← CAPA DE INFRAESTRUCTURA
-│   │   │   │   ├── 📁 persistence/
-│   │   │   │   │   ├── 📁 entity/
+│   │   │   ├──  infrastructure/      ← CAPA DE INFRAESTRUCTURA
+│   │   │   │   ├──  persistence/
+│   │   │   │   │   ├──  entity/
 │   │   │   │   │   │   └── TaskEntity.java
-│   │   │   │   │   ├── 📁 repository/
+│   │   │   │   │   ├──  repository/
 │   │   │   │   │   │   └── TaskJpaRepository.java
-│   │   │   │   │   ├── 📁 adapter/
+│   │   │   │   │   ├──  adapter/
 │   │   │   │   │   │   └── TaskRepositoryAdapter.java
-│   │   │   │   │   └── 📁 mapper/
+│   │   │   │   │   └──  mapper/
 │   │   │   │   │       └── TaskEntityMapper.java
 │   │   │   │   │
-│   │   │   │   ├── 📁 worker/
+│   │   │   │   ├──  worker/
 │   │   │   │   │   ├── TaskWorker.java
 │   │   │   │   │   └── ScheduledTaskScheduler.java
 │   │   │   │   │
-│   │   │   │   ├── 📁 adapter/
+│   │   │   │   ├──  adapter/
 │   │   │   │   │   └── TaskProcessorAdapter.java
 │   │   │   │   │
-│   │   │   │   └── 📁 config/
+│   │   │   │   └──  config/
 │   │   │   │       ├── ApplicationConfig.java
 │   │   │   │       └── JpaConfig.java
 │   │   │   │
-│   │   │   └── 📄 Main.java            ← Punto de entrada
+│   │   │   └──  Main.java            ← Punto de entrada
 │   │   │
-│   │   └── 📁 resources/
-│   │       └── 📄 application.yml      # Configuración Spring Boot
+│   │   └──  resources/
+│   │       └──  application.yml      # Configuración Spring Boot
 │   │
-│   └── 📁 test/                        # Tests (estructura preparada)
-│       └── 📁 java/org/dataki/
+│   └──  test/                        # Tests (estructura preparada)
+│       └──  java/org/dataki/
 │
-└── 📁 target/                          # Compilados (generado por Maven)
-    └── 📄 sync_task-1.0-SNAPSHOT.jar   # Aplicación empaquetada
+└──  target/                          # Compilados (generado por Maven)
+    └──  sync_task-1.0-SNAPSHOT.jar   # Aplicación empaquetada
 ```
 
-## 📊 Estadísticas
+##  Estadísticas
 
 | Métrica | Valor |
 |---------|-------|
@@ -102,32 +102,32 @@ sync_task/
 | Interfaces | 4 |
 | Enums | 2 |
 
-## 🗂️ Descripción de Carpetas
+## ️ Descripción de Carpetas
 
-### 📁 domain/
+###  domain/
 **Responsabilidad**: Lógica de negocio pura
 - **model/**: Entidades y value objects
 - **port/**: Interfaces de puertos (input/output)
 - **service/**: Servicios de dominio
 
-### 📁 application/
+###  application/
 **Responsabilidad**: Orquestación de casos de uso
 - **dto/**: Objetos de transferencia de datos
 - **mapper/**: Conversiones entre capas
 - **service/**: Implementación de casos de uso
 
-### 📁 adapters/
+###  adapters/
 **Responsabilidad**: Puntos de entrada (API)
 - **controller/**: REST API endpoints
 
-### 📁 infrastructure/
+###  infrastructure/
 **Responsabilidad**: Implementaciones técnicas
 - **persistence/**: Acceso a datos (JPA)
 - **worker/**: Procesamiento asíncrono
 - **adapter/**: Adaptadores de salida
 - **config/**: Configuración Spring
 
-## 🔗 Relaciones Entre Archivos
+##  Relaciones Entre Archivos
 
 ```
 TaskController
@@ -155,7 +155,7 @@ ScheduledTaskScheduler
     └─ TaskProcessor
 ```
 
-## 📝 Archivos Importante para Comenzar
+##  Archivos Importante para Comenzar
 
 ### 1. **Para Entender la Arquitectura**
    - Leer: `ARCHITECTURE.md`
@@ -175,7 +175,7 @@ ScheduledTaskScheduler
    - Revisar: `pom.xml` (dependencias)
    - Revisar: `src/main/resources/application.yml` (config)
 
-## 🔀 Flujo de Datos (Ejemplo: Crear Tarea)
+##  Flujo de Datos (Ejemplo: Crear Tarea)
 
 ```
 1. HTTP POST /api/v1/tasks
@@ -199,7 +199,7 @@ ScheduledTaskScheduler
 10. HTTP 201 Created
 ```
 
-## 🎯 Puntos de Extensión (Fácil agregar)
+##  Puntos de Extensión (Fácil agregar)
 
 ### Agregar nuevo Adapter de Entrada (GraphQL)
 ```
@@ -224,7 +224,7 @@ infrastructure/
     └── [Sin cambios en código, solo config]
 ```
 
-## 💾 Requisitos de Sistema
+##  Requisitos de Sistema
 
 | Componente | Requerimiento |
 |-----------|--------------|
@@ -234,7 +234,7 @@ infrastructure/
 | Disco | 500MB+ |
 | OS | Windows, Linux, macOS |
 
-## 🚀 Próximas Acciones
+##  Próximas Acciones
 
 1. **Leer** `QUICKSTART.md`
 2. **Ejecutar** `mvn spring-boot:run`
@@ -242,7 +242,7 @@ infrastructure/
 4. **Explorar** código fuente (comienza por `domain/`)
 5. **Extender** sistema (ver `CONTRIBUTING.md`)
 
-## 📚 Referencias Recomendadas
+##  Referencias Recomendadas
 
 - Arquitectura Hexagonal: https://alistair.cockburn.us/hexagonal-architecture/
 - Domain-Driven Design: Eric Evans
@@ -252,4 +252,3 @@ infrastructure/
 ---
 
 **Última actualización**: 2026-08-12
-

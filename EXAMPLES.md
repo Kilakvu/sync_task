@@ -293,4 +293,3 @@ curl -s http://localhost:8080/api/v1/tasks/queue/pending | jq '.[] | {id: .id, n
 - maxRetries por defecto es 3 si no se especifica
 - Un task creado sin scheduledFor se procesa inmediatamente
 - Las tareas se procesan de acuerdo a su prioridad
-

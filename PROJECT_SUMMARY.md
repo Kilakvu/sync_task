@@ -1,6 +1,6 @@
 # Sistema de Procesamiento Asíncrono de Tareas - Resumen del Proyecto
 
-## 📊 Lo que se ha Creado
+##  Lo que se ha Creado
 
 Se ha desarrollado un **sistema empresarial completo** de procesamiento asíncrono de tareas con arquitectura hexagonal. Este proyecto es ideal para un portafolio backend profesional.
 
@@ -58,7 +58,7 @@ Se ha desarrollado un **sistema empresarial completo** de procesamiento asíncro
 
 ---
 
-## 🎯 Características Implementadas
+##  Características Implementadas
 
 ### ✅ Gestión de Tareas
 - [x] Crear tareas con payload personalizado
@@ -126,7 +126,7 @@ Se ha desarrollado un **sistema empresarial completo** de procesamiento asíncro
 
 ---
 
-## 🏗️ Arquitectura
+## ️ Arquitectura
 
 ```
 ┌─────────────────────────────────────────┐
@@ -157,7 +157,7 @@ Se ha desarrollado un **sistema empresarial completo** de procesamiento asíncro
 
 ---
 
-## 📡 Endpoints REST Disponibles
+##  Endpoints REST Disponibles
 
 ```
 POST   /api/v1/tasks                    Crear nueva tarea
@@ -169,7 +169,7 @@ GET    /api/v1/tasks/queue/pending      Ver cola pendiente
 
 ---
 
-## 🔄 Flujo de Procesamiento
+##  Flujo de Procesamiento
 
 ```
 1. Cliente → POST /api/v1/tasks
@@ -189,7 +189,7 @@ GET    /api/v1/tasks/queue/pending      Ver cola pendiente
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 Incluye dependencias:
 - JUnit 5
@@ -204,7 +204,7 @@ mvn test
 
 ---
 
-## 📦 Tecnologías
+##  Tecnologías
 
 | Componente | Tecnología | Versión |
 |-----------|-----------|---------|
@@ -219,7 +219,7 @@ mvn test
 
 ---
 
-## 🚀 Cómo Usar
+##  Cómo Usar
 
 ### Inicio Rápido
 ```bash
@@ -251,7 +251,7 @@ curl -X POST http://localhost:8080/api/v1/tasks \
 
 ---
 
-## 📚 Documentación
+##  Documentación
 
 Incluida en el proyecto:
 - **README.md** - Visión general
@@ -299,7 +299,7 @@ Incluida en el proyecto:
 
 ---
 
-## 🔮 Posibles Extensiones
+##  Posibles Extensiones
 
 - [ ] Agregar GraphQL API
 - [ ] Implementar Event Sourcing
@@ -314,7 +314,7 @@ Incluida en el proyecto:
 
 ---
 
-## 📋 Checklist Final
+##  Checklist Final
 
 - [x] Arquitectura hexagonal implementada
 - [x] API REST completa
@@ -333,7 +333,7 @@ Incluida en el proyecto:
 
 ---
 
-## 🎓 Aprendizajes Demostrados
+##  Aprendizajes Demostrados
 
 Este proyecto demuestra:
 
@@ -350,7 +350,7 @@ Este proyecto demuestra:
 
 ---
 
-## 💡 Para Entrevistas
+##  Para Entrevistas
 
 Puedes mencionar:
 
@@ -362,7 +362,7 @@ Puedes mencionar:
 
 ---
 
-## 📞 Resumen
+##  Resumen
 
 Un sistema **production-ready** que demuestra:
 - ✅ Sólido conocimiento de arquitectura
@@ -372,5 +372,4 @@ Un sistema **production-ready** que demuestra:
 - ✅ Escalabilidad
 - ✅ DevOps
 
-**Ideal para portafolio backend.** 🚀
-
+**Ideal para portafolio backend.** 

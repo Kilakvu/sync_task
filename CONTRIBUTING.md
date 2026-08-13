@@ -311,5 +311,4 @@ Al contribuir, aceptas que tu código será licenciado bajo MIT License.
 
 ---
 
-¡Gracias por contribuir! 🙏
-
+¡Gracias por contribuir! 

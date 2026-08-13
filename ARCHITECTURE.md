@@ -448,4 +448,3 @@ public class TaskControllerIntegrationTest {
 ## Conclusión
 
 Esta arquitectura proporciona un balance entre flexibilidad, mantenibilidad y escalabilidad, siendo ideal para sistemas que deben evolucionar y adaptarse a nuevos requisitos sin comprometer la lógica de negocio existente.
-
