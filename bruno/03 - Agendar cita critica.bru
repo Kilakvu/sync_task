@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita Crítica (Química Completa)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Ana Rodríguez",
+    "phone": "+34 633 333 444",
+    "service": "Química completa",
+    "durationMinutes": 90,
+    "notes": "Cliente con alergia a la amoníaca",
+    "priority": "CRITICAL",
+    "maxRetries": 10,
+    "scheduledFor": "2026-08-13T11:00:00"
+  }
+}

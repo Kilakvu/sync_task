@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita para Servicio Especial (Encargo)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Pedro Sánchez",
+    "phone": "+34 655 777 888",
+    "service": "Rizado permanente (técnica japonesa)",
+    "durationMinutes": 60,
+    "notes": "Traer referencia de la revista",
+    "priority": "CRITICAL",
+    "maxRetries": 5,
+    "scheduledFor": "2026-08-14T16:00:00"
+  }
+}

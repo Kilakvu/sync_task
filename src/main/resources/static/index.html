@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Task Processor Dashboard</title>
+<title>Citas de la Peluquería</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -37,6 +37,24 @@
   button:hover { background: #1d4ed8; }
   button.secondary { background: #334155; }
   button.secondary:hover { background: #475569; }
+  button.mini { padding: 4px 10px; font-size: 12px; margin-right: 4px; }
+  button.attend { background: #16a34a; }
+  button.attend:hover { background: #15803d; }
+  button.cancel { background: #dc2626; }
+  button.cancel:hover { background: #b91c1c; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+
+  form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  input {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 14px;
+    width: 100%;
+  }
+  input:focus { outline: none; border-color: #2563eb; }
 
   .cards {
     display: grid;
@@ -52,12 +70,14 @@
   }
   .card .count { font-size: 28px; font-weight: 700; }
   .card .label { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+  .card.scheduled { border-left-color: #a855f7; }
   .card.pending   { border-left-color: #f59e0b; }
   .card.processing{ border-left-color: #3b82f6; }
-  .card.scheduled { border-left-color: #a855f7; }
-  .card.retry     { border-left-color: #f97316; }
   .card.completed { border-left-color: #22c55e; }
-  .card.failed    { border-left-color: #ef4444; }
+  .card.attended  { border-left-color: #14b8a6; }
+  .card.cancelled { border-left-color: #ef4444; }
+  .card.retry     { border-left-color: #f97316; }
+  .card.failed    { border-left-color: #64748b; }
 
   .panel {
     background: #1e293b;
@@ -81,12 +101,14 @@
     font-size: 12px;
     font-weight: 600;
   }
+  .status.SCHEDULED { background: #a855f722; color: #c084fc; }
   .status.PENDING   { background: #f59e0b22; color: #fbbf24; }
   .status.PROCESSING{ background: #3b82f622; color: #60a5fa; }
-  .status.SCHEDULED { background: #a855f722; color: #c084fc; }
-  .status.RETRY     { background: #f9731622; color: #fb923c; }
   .status.COMPLETED { background: #22c55e22; color: #4ade80; }
-  .status.FAILED    { background: #ef444422; color: #f87171; }
+  .status.ATTENDED  { background: #14b8a622; color: #2dd4bf; }
+  .status.CANCELLED { background: #ef444422; color: #f87171; }
+  .status.RETRY     { background: #f9731622; color: #fb923c; }
+  .status.FAILED    { background: #64748b22; color: #94a3b8; }
 
   .priority { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: #334155; }
   .priority.CRITICAL { background: #ef444422; color: #f87171; }
@@ -111,66 +133,79 @@
 
 <header>
   <div>
-    <h1>Task Processor Dashboard</h1>
+    <h1>Citas de la Peluquería</h1>
     <div class="badge">Última actualización: <span id="lastRefresh">-</span></div>
   </div>
   <div class="actions">
-    <button id="btnBatch" onclick="createBatch()">Crear lote (20)</button>
     <button class="secondary" onclick="refresh()">Refrescar ahora</button>
   </div>
 </header>
 
+<div class="panel">
+  <h2>Agendar cita por teléfono</h2>
+  <form id="citaForm">
+    <input id="fCustomer" placeholder="Cliente" required>
+    <input id="fPhone" placeholder="Teléfono" required>
+    <input id="fService" placeholder="Servicio (ej. Corte y peinado)" required>
+    <input id="fDateTime" type="datetime-local" required>
+    <input id="fDuration" type="number" min="5" step="5" value="30" placeholder="Duración (min)">
+    <input id="fNotes" placeholder="Notas">
+    <button type="submit" id="btnAdd">Agendar cita</button>
+  </form>
+</div>
+
 <div class="cards" id="cards"></div>
 
 <div class="panel">
-  <h2>Tareas</h2>
+  <h2>Citas de hoy</h2>
   <div style="overflow-x:auto;">
     <table>
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Prioridad</th>
+          <th>Hora</th>
+          <th>Cliente</th>
+          <th>Teléfono</th>
+          <th>Servicio</th>
+          <th>Duración</th>
           <th>Estado</th>
-          <th>Creada</th>
-          <th>Iniciada</th>
-          <th>Completada</th>
-          <th>Reintentos</th>
+          <th>Acciones</th>
         </tr>
       </thead>
-      <tbody id="tasksBody"></tbody>
+      <tbody id="citasBody"></tbody>
     </table>
   </div>
 </div>
 
 <div class="panel">
-  <h2>Cola pendiente de procesamiento</h2>
+  <h2>Cola de recordatorios</h2>
   <div class="queue" id="queue"></div>
 </div>
 
-<div class="footer">Polling cada 2s contra /api/v1/tasks · /api/v1/tasks/queue/pending</div>
+<div class="footer">Polling cada 2s contra /api/v1/citas · /api/v1/citas/hoy · /api/v1/citas/queue/pending</div>
 
 <script>
   const REFRESH_MS = 2000;
   const API_KEY = 'dev-key-123';
-  const STATUSES = ['PENDING', 'PROCESSING', 'SCHEDULED', 'RETRY', 'COMPLETED', 'FAILED'];
+  const STATUSES = ['SCHEDULED', 'PENDING', 'PROCESSING', 'COMPLETED', 'ATTENDED', 'CANCELLED', 'RETRY', 'FAILED'];
   const statusLabels = {
-    PENDING: 'Pendiente', PROCESSING: 'Procesando', SCHEDULED: 'Programada',
-    RETRY: 'Reintento', COMPLETED: 'Completada', FAILED: 'Fallida'
+    SCHEDULED: 'Programada', PENDING: 'Recordatorio pendiente', PROCESSING: 'Enviando recordatorio',
+    COMPLETED: 'Recordatorio enviado', ATTENDED: 'Atendida', CANCELLED: 'Cancelada',
+    RETRY: 'Reintento', FAILED: 'Recordatorio fallido'
   };
-  let previousTasks = new Map();
+  let previousCitas = new Map();
 
-  async function fetchJson(url) {
-    const res = await fetch(url, { headers: { 'X-API-Key': API_KEY } });
+  async function fetchJson(url, options) {
+    const res = await fetch(url, { headers: { 'X-API-Key': API_KEY, ...(options?.headers || {}) }, ...options });
     if (!res.ok) throw new Error(url + ' -> ' + res.status);
     return res.json();
   }
 
   function el(id) { return document.getElementById(id); }
 
-  function renderCards(tasks) {
+  function renderCards(citas) {
     const counts = {};
     STATUSES.forEach(s => counts[s] = 0);
-    tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+    citas.forEach(c => { if (counts[c.status] !== undefined) counts[c.status]++; });
 
     el('cards').innerHTML = STATUSES.map(s => `
       <div class="card ${s.toLowerCase()}">
@@ -180,23 +215,27 @@
     `).join('');
   }
 
-  function renderTasks(tasks) {
-    const sorted = [...tasks].sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-    el('tasksBody').innerHTML = sorted.length === 0
-      ? '<tr><td colspan="7" class="empty">Sin tareas todavía</td></tr>'
-      : sorted.map(t => {
-          const prev = previousTasks.get(t.id);
-          const pulse = prev && prev.status !== t.status ? ' pulse' : '';
-          previousTasks.set(t.id, t);
+  function renderCitas(citas) {
+    const sorted = [...citas].sort((a, b) => (a.scheduledFor || '').localeCompare(b.scheduledFor || ''));
+    el('citasBody').innerHTML = sorted.length === 0
+      ? '<tr><td colspan="7" class="empty">Sin citas para hoy</td></tr>'
+      : sorted.map(c => {
+          const prev = previousCitas.get(c.id);
+          const pulse = prev && prev.status !== c.status ? ' pulse' : '';
+          previousCitas.set(c.id, c);
+          const finalState = c.status === 'ATTENDED' || c.status === 'CANCELLED';
           return `
             <tr class="${pulse}">
-              <td>${escapeHtml(t.name)}</td>
-              <td><span class="priority ${t.priority}">${t.priority}</span></td>
-              <td><span class="status ${t.status}">${statusLabels[t.status] || t.status}</span></td>
-              <td>${fmt(t.createdAt)}</td>
-              <td>${fmt(t.startedAt)}</td>
-              <td>${fmt(t.completedAt)}</td>
-              <td>${t.retryCount}/${t.maxRetries}</td>
+              <td>${fmtDate(c.scheduledFor)}</td>
+              <td><b>${escapeHtml(c.customerName)}</b></td>
+              <td>${escapeHtml(c.phone)}</td>
+              <td>${escapeHtml(c.service)} <span class="priority ${c.priority}">${c.priority}</span></td>
+              <td>${c.durationMinutes} min</td>
+              <td><span class="status ${c.status}">${statusLabels[c.status] || c.status}</span></td>
+              <td>${finalState ? '-' : `
+                <button class="mini attend" onclick="setCitaState('${c.id}', 'atender')">Atender</button>
+                <button class="mini cancel" onclick="setCitaState('${c.id}', 'cancelar')">Cancelar</button>`}
+              </td>
             </tr>`;
         }).join('');
   }
@@ -204,21 +243,22 @@
   function renderQueue(queue) {
     el('queue').innerHTML = queue.length === 0
       ? '<div class="empty">Cola vacía</div>'
-      : queue.map(t => `
+      : queue.map(c => `
           <div class="queue-item">
-            <b>${escapeHtml(t.name)}</b>
-            <span class="priority ${t.priority}">${t.priority}</span>
+            <b>${escapeHtml(c.customerName)}</b> · ${escapeHtml(c.service)}
+            <span class="priority ${c.priority}">${c.priority}</span>
           </div>`).join('');
   }
 
   async function refresh() {
     try {
-      const [tasks, queue] = await Promise.all([
-        fetchJson('/api/v1/tasks'),
-        fetchJson('/api/v1/tasks/queue/pending')
+      const [all, hoy, queue] = await Promise.all([
+        fetchJson('/api/v1/citas'),
+        fetchJson('/api/v1/citas/hoy'),
+        fetchJson('/api/v1/citas/queue/pending')
       ]);
-      renderCards(tasks);
-      renderTasks(tasks);
+      renderCards(all);
+      renderCitas(hoy);
       renderQueue(queue);
       el('lastRefresh').textContent = new Date().toLocaleTimeString();
     } catch (e) {
@@ -226,34 +266,50 @@
     }
   }
 
-  async function createBatch() {
-    el('btnBatch').disabled = true;
-    el('btnBatch').textContent = 'Creando...';
-    const items = Array.from({ length: 20 }, (_, i) => ({
-      name: `Tarea Batch ${i + 1}`,
-      description: 'Creada desde dashboard',
-      payload: JSON.stringify({ batch: 1, item: i + 1 }),
-      priority: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'][i % 4]
-    }));
+  async function setCitaState(id, action) {
     try {
-      await fetch('/api/v1/tasks/batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
-        body: JSON.stringify({ tasks: items })
+      await fetch(`/api/v1/citas/${id}/${action}`, {
+        method: 'PATCH',
+        headers: { 'X-API-Key': API_KEY }
       });
       await refresh();
     } catch (e) {
-      alert('Error creando lote: ' + e.message);
-    } finally {
-      el('btnBatch').disabled = false;
-      el('btnBatch').textContent = 'Crear lote (20)';
+      alert('Error: ' + e.message);
     }
   }
 
-  function fmt(iso) {
+  el('citaForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = el('btnAdd');
+    btn.disabled = true;
+    const payload = {
+      customerName: el('fCustomer').value.trim(),
+      phone: el('fPhone').value.trim(),
+      service: el('fService').value.trim(),
+      scheduledFor: el('fDateTime').value,
+      durationMinutes: parseInt(el('fDuration').value || '30', 10),
+      notes: el('fNotes').value.trim()
+    };
+    try {
+      await fetchJson('/api/v1/citas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      e.target.reset();
+      el('fDuration').value = '30';
+      await refresh();
+    } catch (err) {
+      alert('Error agendando cita: ' + err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  function fmtDate(iso) {
     if (!iso) return '-';
     const d = new Date(iso);
-    return isNaN(d) ? iso : d.toLocaleTimeString('es-ES');
+    return isNaN(d) ? iso : d.toLocaleString('es-ES');
   }
 
   function escapeHtml(s) {

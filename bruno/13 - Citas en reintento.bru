@@ -1,0 +1,15 @@
+meta {
+  name: Obtener Citas en Reintento
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/status/RETRY
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

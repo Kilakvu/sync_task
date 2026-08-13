@@ -11,6 +11,7 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>4.1.0</spring.boot.version>
     </properties>
@@ -56,10 +57,17 @@
             <version>3.1.0</version>
         </dependency>
 
-        <!-- Flyway para migraciones de BD (usar la versión gestionada por Spring Boot) -->
+        <!-- Flyway para migraciones de BD. Boot 4 ya no auto-configura flyway-core:
+             hay que usar el starter (incluye el módulo de auto-configuración spring-boot-flyway) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+
+        <!-- Soporte de PostgreSQL para Flyway (Flyway 10+ lo separó en módulos por BD) -->
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
         <!-- Lombok -->
@@ -103,6 +111,14 @@
 
     <build>
         <plugins>
+            <!-- Habilitar -parameters para que Spring MVC pueda resolver @PathVariable/@RequestParam por nombre -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

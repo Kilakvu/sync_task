@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sync-task-system
+    name: citas-peluqueria
   datasource:
     # DB_HOST permite ejecutar la app desde el host (localhost) o desde un contenedor (DB_HOST=postgres)
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/taskdb
@@ -44,4 +44,4 @@ springdoc:
     tagsSorter: alpha
   api-docs:
     path: /v3/api-docs
-  show-actuator: true
+  show-actuator: false

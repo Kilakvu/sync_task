@@ -1,0 +1,15 @@
+meta {
+  name: Obtener Citas con Recordatorio Enviado
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/status/COMPLETED
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

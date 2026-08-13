@@ -1,0 +1,15 @@
+meta {
+  name: Obtener una Cita Específica
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/550e8400-e29b-41d4-a716-446655440000
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

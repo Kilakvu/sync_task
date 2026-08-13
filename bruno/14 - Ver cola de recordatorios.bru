@@ -1,0 +1,15 @@
+meta {
+  name: Ver Cola de Recordatorios
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/queue/pending
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

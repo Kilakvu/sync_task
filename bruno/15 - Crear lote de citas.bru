@@ -1,0 +1,68 @@
+meta {
+  name: Crear Lote de Citas
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas/batch
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "citas": [
+      {
+        "customerName": "Cliente Lote 1",
+        "phone": "+34 600 000 001",
+        "service": "Corte de pelo",
+        "durationMinutes": 20,
+        "notes": "Creada en lote",
+        "priority": "LOW",
+        "scheduledFor": "2026-08-13T10:00:00"
+      },
+      {
+        "customerName": "Cliente Lote 2",
+        "phone": "+34 600 000 002",
+        "service": "Peinado",
+        "durationMinutes": 20,
+        "notes": "Creada en lote",
+        "priority": "MEDIUM",
+        "scheduledFor": "2026-08-13T10:20:00"
+      },
+      {
+        "customerName": "Cliente Lote 3",
+        "phone": "+34 600 000 003",
+        "service": "Tinte",
+        "durationMinutes": 40,
+        "notes": "Creada en lote",
+        "priority": "HIGH",
+        "scheduledFor": "2026-08-13T10:40:00"
+      },
+      {
+        "customerName": "Cliente Lote 4",
+        "phone": "+34 600 000 004",
+        "service": "Tratamiento capilar",
+        "durationMinutes": 60,
+        "notes": "Creada en lote",
+        "priority": "HIGH",
+        "scheduledFor": "2026-08-13T11:00:00"
+      },
+      {
+        "customerName": "Cliente Lote 5",
+        "phone": "+34 600 000 005",
+        "service": "Química completa",
+        "durationMinutes": 90,
+        "notes": "Creada en lote",
+        "priority": "CRITICAL",
+        "scheduledFor": "2026-08-13T11:30:00"
+      }
+    ]
+  }
+}

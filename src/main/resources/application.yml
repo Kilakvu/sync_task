@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sync-task-system
+    name: citas-peluqueria
   jpa:
     hibernate:
       ddl-auto: validate
@@ -25,6 +25,20 @@ server:
 api:
   key: ${API_KEY:dev-key-123}
 
+# Notificaciones: el modo simulated (por defecto) solo registra el recordatorio en el log;
+# el modo whatsapp envía plantillas reales por WhatsApp Cloud API.
+app:
+  notifications:
+    mode: ${NOTIFICATIONS_MODE:simulated}
+  whatsapp:
+    access-token: ${WHATSAPP_ACCESS_TOKEN:}
+    phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    verify-token: ${WHATSAPP_VERIFY_TOKEN:whatsapp-dev}
+    api-url: ${WHATSAPP_API_URL:}
+    graph-api-version: ${WHATSAPP_GRAPH_API_VERSION:v21.0}
+    template-name: ${WHATSAPP_TEMPLATE_NAME:cita_recordatorio}
+    template-language: ${WHATSAPP_TEMPLATE_LANGUAGE:es}
+
 logging:
   level:
     root: INFO
@@ -43,5 +57,5 @@ springdoc:
     tagsSorter: alpha
   api-docs:
     path: /v3/api-docs
-  show-actuator: true
+  show-actuator: false
 

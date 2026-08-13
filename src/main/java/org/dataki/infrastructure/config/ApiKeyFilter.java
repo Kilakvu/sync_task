@@ -33,7 +33,8 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         }
         String path = request.getRequestURI();
         return !path.startsWith("/api/")
-                || path.startsWith("/api/v1/auth");
+                || path.startsWith("/api/v1/auth")
+                || path.startsWith("/api/v1/whatsapp/webhook");
     }
 
     @Override

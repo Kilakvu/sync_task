@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita Alta Prioridad (Cliente VIP)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Carlos Pérez",
+    "phone": "+34 622 111 222",
+    "service": "Corte y arreglo de barba",
+    "durationMinutes": 45,
+    "notes": "Cliente VIP, pedir su peluquero habitual",
+    "priority": "HIGH",
+    "maxRetries": 5,
+    "scheduledFor": "2026-08-13T12:30:00"
+  }
+}

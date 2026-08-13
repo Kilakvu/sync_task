@@ -1,0 +1,15 @@
+meta {
+  name: Listar Todas las Citas
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}
