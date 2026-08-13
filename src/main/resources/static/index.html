@@ -151,6 +151,7 @@
 
 <script>
   const REFRESH_MS = 2000;
+  const API_KEY = 'dev-key-123';
   const STATUSES = ['PENDING', 'PROCESSING', 'SCHEDULED', 'RETRY', 'COMPLETED', 'FAILED'];
   const statusLabels = {
     PENDING: 'Pendiente', PROCESSING: 'Procesando', SCHEDULED: 'Programada',
@@ -159,7 +160,7 @@
   let previousTasks = new Map();
 
   async function fetchJson(url) {
-    const res = await fetch(url);
+    const res = await fetch(url, { headers: { 'X-API-Key': API_KEY } });
     if (!res.ok) throw new Error(url + ' -> ' + res.status);
     return res.json();
   }
@@ -237,7 +238,7 @@
     try {
       await fetch('/api/v1/tasks/batch', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
         body: JSON.stringify({ tasks: items })
       });
       await refresh();

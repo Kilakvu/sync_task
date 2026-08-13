@@ -20,6 +20,11 @@ server:
   servlet:
     context-path: /
 
+# Clave de acceso a la API. Sobrescribe con la env var API_KEY en cada entorno
+# (p. ej. preprod/prod en GitHub Environments).
+api:
+  key: ${API_KEY:dev-key-123}
+
 logging:
   level:
     root: INFO
