@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:8081/api/v1/tasks/status/SCHEDULED
+  url: {{baseUrl}}/api/v1/tasks/status/SCHEDULED
   body: none
   auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
 }

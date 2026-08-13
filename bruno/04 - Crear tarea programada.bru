@@ -1,23 +1,24 @@
 meta {
-  name: Crear Tarea Programada para Más Tarde
+  name: Crear Tarea Programada para MÃ¡s Tarde
   type: http
   seq: 4
 }
 
 post {
-  url: http://localhost:8081/api/v1/tasks
+  url: {{baseUrl}}/api/v1/tasks
   body: json
   auth: none
 }
 
 headers {
+  X-API-Key: {{apiKey}}
   Content-Type: application/json
 }
 
 body:json {
   {
     "name": "Generar Reporte Diario",
-    "description": "Reporte de ventas del día",
+    "description": "Reporte de ventas del dÃ­a",
     "payload": "{\"type\": \"sales\", \"date\": \"2026-08-12\"}",
     "priority": "MEDIUM",
     "maxRetries": 3,
