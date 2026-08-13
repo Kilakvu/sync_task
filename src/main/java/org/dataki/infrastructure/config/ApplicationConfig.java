@@ -6,6 +6,7 @@ import org.dataki.application.service.CitaProcessorService;
 import org.dataki.domain.port.output.CitaProcessor;
 import org.dataki.domain.port.output.CitaRepository;
 import org.dataki.domain.service.CitaDomainService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableScheduling
 @EnableAsync
+@EnableConfigurationProperties(WhatsAppProperties.class)
 public class ApplicationConfig {
     
     @Bean
@@ -35,7 +37,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public CitaProcessorService citaProcessorService(CitaRepository citaRepository) {
-        return new CitaProcessorService(citaRepository);
+    public CitaProcessorService citaProcessorService(CitaRepository citaRepository, CitaProcessor citaProcessor) {
+        return new CitaProcessorService(citaRepository, citaProcessor);
     }
 }
