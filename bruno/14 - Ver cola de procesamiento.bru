@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:8081/api/v1/tasks/queue/pending
+  url: {{baseUrl}}/api/v1/tasks/queue/pending
   body: none
   auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
 }

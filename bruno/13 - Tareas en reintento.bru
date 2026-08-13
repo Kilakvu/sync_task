@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:8081/api/v1/tasks/status/RETRY
+  url: {{baseUrl}}/api/v1/tasks/status/RETRY
   body: none
   auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
 }
