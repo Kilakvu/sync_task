@@ -1,19 +1,6 @@
-## Descripción
+## PR: {title}
 
-<!-- ¿Qué hace este cambio y por qué? -->
-
-## Cambios principales
-
-- 
-- 
-
-## Cómo probar
-
-- 
-
-## Issues relacionados
-
-- Closes #
+{description}
 
 ## Checklist
 
