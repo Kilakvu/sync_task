@@ -7,6 +7,9 @@ target/
 # Secretos locales de Bruno (ver bruno/.env.example)
 bruno/.env
 
+# Credenciales locales de WhatsApp (ver scripts/run-whatsapp-local.ps1)
+scripts/whatsapp.local.env
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
