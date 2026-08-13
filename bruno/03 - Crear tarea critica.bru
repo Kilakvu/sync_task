@@ -1,23 +1,24 @@
 meta {
-  name: Crear Tarea Crítica
+  name: Crear Tarea CrÃ­tica
   type: http
   seq: 3
 }
 
 post {
-  url: http://localhost:8081/api/v1/tasks
+  url: {{baseUrl}}/api/v1/tasks
   body: json
   auth: none
 }
 
 headers {
+  X-API-Key: {{apiKey}}
   Content-Type: application/json
 }
 
 body:json {
   {
     "name": "Sincronizar Base de Datos",
-    "description": "Sincronizar réplica con base de datos principal",
+    "description": "Sincronizar rÃ©plica con base de datos principal",
     "payload": "{\"primary\": \"db-primary.internal\", \"replica\": \"db-replica.internal\"}",
     "priority": "CRITICAL",
     "maxRetries": 10
