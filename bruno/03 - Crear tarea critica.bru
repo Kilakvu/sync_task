@@ -1,0 +1,25 @@
+meta {
+  name: Crear Tarea Crítica
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8081/api/v1/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Sincronizar Base de Datos",
+    "description": "Sincronizar réplica con base de datos principal",
+    "payload": "{\"primary\": \"db-primary.internal\", \"replica\": \"db-replica.internal\"}",
+    "priority": "CRITICAL",
+    "maxRetries": 10
+  }
+}

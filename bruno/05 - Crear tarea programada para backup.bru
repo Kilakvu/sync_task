@@ -1,0 +1,26 @@
+meta {
+  name: Crear Tarea Programada para Backup
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8081/api/v1/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Backup Completo de BD",
+    "description": "Backup completo de base de datos principal",
+    "payload": "{\"database\": \"production\", \"type\": \"full\", \"compression\": true}",
+    "priority": "CRITICAL",
+    "maxRetries": 5,
+    "scheduledFor": "2026-08-13T03:00:00"
+  }
+}

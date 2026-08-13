@@ -1,0 +1,25 @@
+meta {
+  name: Crear Tarea de Envío de Email
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8081/api/v1/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Enviar Newsletter",
+    "description": "Enviar contenido a suscriptores",
+    "payload": "{\"templateId\": \"newsletter-001\", \"recipients\": 5000, \"subject\": \"August Newsletter\"}",
+    "priority": "MEDIUM",
+    "maxRetries": 3
+  }
+}

@@ -1,0 +1,11 @@
+meta {
+  name: Obtener Tareas Completadas
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:8081/api/v1/tasks/status/COMPLETED
+  body: none
+  auth: none
+}

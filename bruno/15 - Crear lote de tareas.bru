@@ -1,0 +1,52 @@
+meta {
+  name: Crear Lote de Tareas
+  type: http
+  seq: 15
+}
+
+post {
+  url: http://localhost:8081/api/v1/tasks/batch
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tasks": [
+      {
+        "name": "Tarea Lote 1",
+        "description": "Creada en lote",
+        "payload": "{\"batch\": 1, \"item\": 1}",
+        "priority": "LOW"
+      },
+      {
+        "name": "Tarea Lote 2",
+        "description": "Creada en lote",
+        "payload": "{\"batch\": 1, \"item\": 2}",
+        "priority": "MEDIUM"
+      },
+      {
+        "name": "Tarea Lote 3",
+        "description": "Creada en lote",
+        "payload": "{\"batch\": 1, \"item\": 3}",
+        "priority": "HIGH"
+      },
+      {
+        "name": "Tarea Lote 4",
+        "description": "Creada en lote",
+        "payload": "{\"batch\": 1, \"item\": 4}",
+        "priority": "HIGH"
+      },
+      {
+        "name": "Tarea Lote 5",
+        "description": "Creada en lote",
+        "payload": "{\"batch\": 1, \"item\": 5}",
+        "priority": "CRITICAL"
+      }
+    ]
+  }
+}

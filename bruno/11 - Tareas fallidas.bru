@@ -1,0 +1,11 @@
+meta {
+  name: Obtener Tareas Fallidas
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:8081/api/v1/tasks/status/FAILED
+  body: none
+  auth: none
+}
