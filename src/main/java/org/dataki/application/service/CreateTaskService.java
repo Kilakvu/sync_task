@@ -1,5 +1,6 @@
 package org.dataki.application.service;
 
+import org.dataki.application.dto.CreateTaskRequest;
 import org.dataki.domain.model.Task;
 import org.dataki.domain.model.TaskPriority;
 import org.dataki.domain.port.input.CreateTaskUseCase;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Caso de uso para crear nuevas tareas
@@ -26,6 +28,25 @@ public class CreateTaskService implements CreateTaskUseCase {
     @Override
     public Task createTask(String name, String description, String payload, 
                           TaskPriority priority, Integer maxRetries, LocalDateTime scheduledFor) {
+        return createSingleTask(name, description, payload, priority, maxRetries, scheduledFor);
+    }
+
+    /**
+     * Crea múltiples tareas de una sola vez
+     */
+    public List<Task> createTasks(List<CreateTaskRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            throw new IllegalArgumentException("Task list cannot be empty");
+        }
+        logger.info("Creating batch of {} tasks", requests.size());
+        return requests.stream()
+                .map(r -> createSingleTask(r.name(), r.description(), r.payload(),
+                        r.priority(), r.maxRetries(), r.scheduledFor()))
+                .toList();
+    }
+
+    private Task createSingleTask(String name, String description, String payload,
+                                  TaskPriority priority, Integer maxRetries, LocalDateTime scheduledFor) {
         logger.info("Creating new task: {}", name);
 
         // Validación en capa de aplicación
@@ -57,6 +78,5 @@ public class CreateTaskService implements CreateTaskUseCase {
         return savedTask;
     }
 }
-
 
 
