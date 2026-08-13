@@ -2,15 +2,16 @@ name: Continuous Deployment
 
 on:
   push:
-    branches: [main, develop]
+    branches: [develop]
+    tags: ['v*']
 
 permissions:
   contents: read
 
 jobs:
-  # Despliegue a Preproducción
+  # Despliegue a Preproducción (push a develop)
   deploy-preprod:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref_type == 'branch'
     runs-on: ubuntu-latest
     environment: preprod
     steps:
@@ -25,9 +26,9 @@ jobs:
           # ssh deploy@${{ vars.DEPLOY_HOST }} \
           #   "cd /app && docker compose pull && docker compose up -d"
 
-  # Despliegue a Producción
+  # Despliegue a Producción (push de tag v*)
   deploy-prod:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment: prod
     steps:
