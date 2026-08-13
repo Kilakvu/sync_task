@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Processor Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  h1 { font-size: 22px; font-weight: 600; }
+  .badge { font-size: 13px; color: #94a3b8; }
+  .actions { display: flex; gap: 10px; }
+  button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button:hover { background: #1d4ed8; }
+  button.secondary { background: #334155; }
+  button.secondary:hover { background: #475569; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 14px;
+    border-left: 4px solid #64748b;
+  }
+  .card .count { font-size: 28px; font-weight: 700; }
+  .card .label { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+  .card.pending   { border-left-color: #f59e0b; }
+  .card.processing{ border-left-color: #3b82f6; }
+  .card.scheduled { border-left-color: #a855f7; }
+  .card.retry     { border-left-color: #f97316; }
+  .card.completed { border-left-color: #22c55e; }
+  .card.failed    { border-left-color: #ef4444; }
+
+  .panel {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #cbd5e1; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #334155; }
+  th { color: #94a3b8; font-weight: 500; position: sticky; top: 0; background: #1e293b; }
+  tr { transition: background .3s; }
+  tr.pulse { background: #1d4ed8; animation: fade 2s ease; }
+  @keyframes fade { from { background: #1d4ed8; } to { background: transparent; } }
+
+  .status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status.PENDING   { background: #f59e0b22; color: #fbbf24; }
+  .status.PROCESSING{ background: #3b82f622; color: #60a5fa; }
+  .status.SCHEDULED { background: #a855f722; color: #c084fc; }
+  .status.RETRY     { background: #f9731622; color: #fb923c; }
+  .status.COMPLETED { background: #22c55e22; color: #4ade80; }
+  .status.FAILED    { background: #ef444422; color: #f87171; }
+
+  .priority { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: #334155; }
+  .priority.CRITICAL { background: #ef444422; color: #f87171; }
+  .priority.HIGH     { background: #f9731622; color: #fb923c; }
+  .priority.MEDIUM   { background: #eab30822; color: #facc15; }
+  .priority.LOW      { background: #22c55e22; color: #4ade80; }
+
+  .queue { display: flex; gap: 10px; flex-wrap: wrap; }
+  .queue-item {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .error { color: #f87171; padding: 20px; text-align: center; }
+  .empty { color: #64748b; text-align: center; padding: 20px; }
+  .footer { text-align: center; color: #475569; font-size: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Task Processor Dashboard</h1>
+    <div class="badge">Última actualización: <span id="lastRefresh">-</span></div>
+  </div>
+  <div class="actions">
+    <button id="btnBatch" onclick="createBatch()">Crear lote (20)</button>
+    <button class="secondary" onclick="refresh()">Refrescar ahora</button>
+  </div>
+</header>
+
+<div class="cards" id="cards"></div>
+
+<div class="panel">
+  <h2>Tareas</h2>
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Creada</th>
+          <th>Iniciada</th>
+          <th>Completada</th>
+          <th>Reintentos</th>
+        </tr>
+      </thead>
+      <tbody id="tasksBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Cola pendiente de procesamiento</h2>
+  <div class="queue" id="queue"></div>
+</div>
+
+<div class="footer">Polling cada 2s contra /api/v1/tasks · /api/v1/tasks/queue/pending</div>
+
+<script>
+  const REFRESH_MS = 2000;
+  const STATUSES = ['PENDING', 'PROCESSING', 'SCHEDULED', 'RETRY', 'COMPLETED', 'FAILED'];
+  const statusLabels = {
+    PENDING: 'Pendiente', PROCESSING: 'Procesando', SCHEDULED: 'Programada',
+    RETRY: 'Reintento', COMPLETED: 'Completada', FAILED: 'Fallida'
+  };
+  let previousTasks = new Map();
+
+  async function fetchJson(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(url + ' -> ' + res.status);
+    return res.json();
+  }
+
+  function el(id) { return document.getElementById(id); }
+
+  function renderCards(tasks) {
+    const counts = {};
+    STATUSES.forEach(s => counts[s] = 0);
+    tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+
+    el('cards').innerHTML = STATUSES.map(s => `
+      <div class="card ${s.toLowerCase()}">
+        <div class="count">${counts[s]}</div>
+        <div class="label">${statusLabels[s]}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderTasks(tasks) {
+    const sorted = [...tasks].sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+    el('tasksBody').innerHTML = sorted.length === 0
+      ? '<tr><td colspan="7" class="empty">Sin tareas todavía</td></tr>'
+      : sorted.map(t => {
+          const prev = previousTasks.get(t.id);
+          const pulse = prev && prev.status !== t.status ? ' pulse' : '';
+          previousTasks.set(t.id, t);
+          return `
+            <tr class="${pulse}">
+              <td>${escapeHtml(t.name)}</td>
+              <td><span class="priority ${t.priority}">${t.priority}</span></td>
+              <td><span class="status ${t.status}">${statusLabels[t.status] || t.status}</span></td>
+              <td>${fmt(t.createdAt)}</td>
+              <td>${fmt(t.startedAt)}</td>
+              <td>${fmt(t.completedAt)}</td>
+              <td>${t.retryCount}/${t.maxRetries}</td>
+            </tr>`;
+        }).join('');
+  }
+
+  function renderQueue(queue) {
+    el('queue').innerHTML = queue.length === 0
+      ? '<div class="empty">Cola vacía</div>'
+      : queue.map(t => `
+          <div class="queue-item">
+            <b>${escapeHtml(t.name)}</b>
+            <span class="priority ${t.priority}">${t.priority}</span>
+          </div>`).join('');
+  }
+
+  async function refresh() {
+    try {
+      const [tasks, queue] = await Promise.all([
+        fetchJson('/api/v1/tasks'),
+        fetchJson('/api/v1/tasks/queue/pending')
+      ]);
+      renderCards(tasks);
+      renderTasks(tasks);
+      renderQueue(queue);
+      el('lastRefresh').textContent = new Date().toLocaleTimeString();
+    } catch (e) {
+      el('cards').innerHTML = `<div class="error">No se pudo conectar con la API: ${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  async function createBatch() {
+    el('btnBatch').disabled = true;
+    el('btnBatch').textContent = 'Creando...';
+    const items = Array.from({ length: 20 }, (_, i) => ({
+      name: `Tarea Batch ${i + 1}`,
+      description: 'Creada desde dashboard',
+      payload: JSON.stringify({ batch: 1, item: i + 1 }),
+      priority: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'][i % 4]
+    }));
+    try {
+      await fetch('/api/v1/tasks/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tasks: items })
+      });
+      await refresh();
+    } catch (e) {
+      alert('Error creando lote: ' + e.message);
+    } finally {
+      el('btnBatch').disabled = false;
+      el('btnBatch').textContent = 'Crear lote (20)';
+    }
+  }
+
+  function fmt(iso) {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    return isNaN(d) ? iso : d.toLocaleTimeString('es-ES');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+  }
+
+  refresh();
+  setInterval(refresh, REFRESH_MS);
+</script>
+</body>
+</html>
