@@ -25,4 +25,3 @@ public interface TaskJpaRepository extends JpaRepository<TaskEntity, String> {
             "ORDER BY t.scheduledFor ASC")
     List<TaskEntity> findScheduledTasksReadyToProcess(LocalDateTime now);
 }
-

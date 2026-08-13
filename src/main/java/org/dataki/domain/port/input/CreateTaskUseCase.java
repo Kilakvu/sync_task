@@ -13,4 +13,3 @@ public interface CreateTaskUseCase {
                     TaskPriority priority, Integer maxRetries, LocalDateTime scheduledFor);
 }
 
-

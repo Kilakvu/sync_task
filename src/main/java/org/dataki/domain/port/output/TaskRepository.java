@@ -24,4 +24,3 @@ public interface TaskRepository {
 
     boolean existsById(String id);
 }
-

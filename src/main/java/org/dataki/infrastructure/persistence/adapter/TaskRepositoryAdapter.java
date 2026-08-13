@@ -71,4 +71,3 @@ public class TaskRepositoryAdapter implements TaskRepository {
         return jpaRepository.existsById(id);
     }
 }
-

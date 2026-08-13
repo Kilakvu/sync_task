@@ -18,4 +18,3 @@ public interface RetrieveTaskUseCase {
 
     List<Task> getTasksReadyToProcess();
 }
-

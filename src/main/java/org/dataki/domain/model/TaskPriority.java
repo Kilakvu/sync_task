@@ -19,4 +19,3 @@ public enum TaskPriority {
         return value;
     }
 }
-

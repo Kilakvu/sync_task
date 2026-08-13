@@ -10,4 +10,3 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "org.dataki.infrastructure.persistence.repository")
 public class JpaConfig {
 }
-

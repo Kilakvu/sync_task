@@ -10,4 +10,3 @@ public interface TaskProcessor {
 
     void scheduleTask(Task task);
 }
-

@@ -39,4 +39,3 @@ public class ApplicationConfig {
         return new TaskProcessorService(taskRepository);
     }
 }
-

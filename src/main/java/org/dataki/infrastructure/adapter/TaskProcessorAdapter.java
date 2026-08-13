@@ -34,4 +34,3 @@ public class TaskProcessorAdapter implements TaskProcessor {
         // El ScheduledTaskScheduler se encargará de procesar las tareas cuando llegue el momento
     }
 }
-

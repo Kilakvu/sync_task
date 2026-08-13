@@ -45,4 +45,3 @@ public class RetrieveTaskService implements RetrieveTaskUseCase {
         return taskRepository.findPendingTasks();
     }
 }
-

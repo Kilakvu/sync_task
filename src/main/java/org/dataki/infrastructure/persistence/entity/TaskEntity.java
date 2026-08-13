@@ -191,4 +191,3 @@ public class TaskEntity {
         this.completedAt = completedAt;
     }
 }
-
