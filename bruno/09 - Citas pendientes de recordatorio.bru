@@ -1,0 +1,15 @@
+meta {
+  name: Obtener Citas Pendientes de Recordatorio
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/status/PENDING
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

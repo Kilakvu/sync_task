@@ -1,0 +1,15 @@
+meta {
+  name: Obtener Citas Atendidas
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/v1/citas/status/ATTENDED
+  body: none
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+}

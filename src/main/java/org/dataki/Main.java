@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Aplicación principal - Sistema de Procesamiento de Tareas con Arquitectura Hexagonal
+ * Aplicación principal - Sistema de Gestión de Citas de la Peluquería con Arquitectura Hexagonal
  */
 @SpringBootApplication
 public class Main {

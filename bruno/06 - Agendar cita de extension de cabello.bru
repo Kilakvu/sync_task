@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita de Extensión de Cabello
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Sofía Gómez",
+    "phone": "+34 666 999 000",
+    "service": "Extensión de cabello",
+    "durationMinutes": 15,
+    "notes": "Pagado por adelantado",
+    "priority": "MEDIUM",
+    "maxRetries": 3,
+    "scheduledFor": "2026-08-13T18:00:00"
+  }
+}

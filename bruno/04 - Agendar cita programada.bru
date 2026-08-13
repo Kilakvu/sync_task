@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita Programada para Más Tarde
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "Lucía Fernández",
+    "phone": "+34 644 555 666",
+    "service": "Tinte y peinado de fiesta",
+    "durationMinutes": 60,
+    "notes": "Cliente reservó por teléfono",
+    "priority": "MEDIUM",
+    "maxRetries": 3,
+    "scheduledFor": "2026-08-14T09:30:00"
+  }
+}

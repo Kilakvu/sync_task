@@ -1,11 +1,11 @@
 package org.dataki.infrastructure.config;
 
-import org.dataki.application.service.CreateTaskService;
-import org.dataki.application.service.RetrieveTaskService;
-import org.dataki.application.service.TaskProcessorService;
-import org.dataki.domain.port.output.TaskProcessor;
-import org.dataki.domain.port.output.TaskRepository;
-import org.dataki.domain.service.TaskDomainService;
+import org.dataki.application.service.CreateCitaService;
+import org.dataki.application.service.RetrieveCitaService;
+import org.dataki.application.service.CitaProcessorService;
+import org.dataki.domain.port.output.CitaProcessor;
+import org.dataki.domain.port.output.CitaRepository;
+import org.dataki.domain.service.CitaDomainService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,22 +20,22 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class ApplicationConfig {
     
     @Bean
-    public TaskDomainService taskDomainService(TaskRepository taskRepository) {
-        return new TaskDomainService(taskRepository);
+    public CitaDomainService citaDomainService(CitaRepository citaRepository) {
+        return new CitaDomainService(citaRepository);
     }
 
     @Bean
-    public CreateTaskService createTaskService(TaskRepository taskRepository, TaskProcessor taskProcessor) {
-        return new CreateTaskService(taskRepository, taskProcessor);
+    public CreateCitaService createCitaService(CitaRepository citaRepository, CitaProcessor citaProcessor) {
+        return new CreateCitaService(citaRepository, citaProcessor);
     }
 
     @Bean
-    public RetrieveTaskService retrieveTaskService(TaskRepository taskRepository) {
-        return new RetrieveTaskService(taskRepository);
+    public RetrieveCitaService retrieveCitaService(CitaRepository citaRepository) {
+        return new RetrieveCitaService(citaRepository);
     }
 
     @Bean
-    public TaskProcessorService taskProcessorService(TaskRepository taskRepository) {
-        return new TaskProcessorService(taskRepository);
+    public CitaProcessorService citaProcessorService(CitaRepository citaRepository) {
+        return new CitaProcessorService(citaRepository);
     }
 }

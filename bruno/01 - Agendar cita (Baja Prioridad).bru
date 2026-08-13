@@ -1,0 +1,29 @@
+meta {
+  name: Agendar Cita Inmediata (Baja Prioridad)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/citas
+  body: json
+  auth: none
+}
+
+headers {
+  X-API-Key: {{apiKey}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "customerName": "María González",
+    "phone": "+34 612 345 678",
+    "service": "Corte de caballero",
+    "durationMinutes": 30,
+    "notes": "Sin lavado previo",
+    "priority": "LOW",
+    "maxRetries": 2,
+    "scheduledFor": "2026-08-13T15:00:00"
+  }
+}
