@@ -4,18 +4,19 @@ Este documento explica cómo desplegar la aplicación en los entornos **preprod*
 
 ## 1. Modelo de Entornos
 
-| Entorno  | Rama de despliegue | Cuándo se ejecuta        | Requiere aprobación |
-|----------|--------------------|--------------------------|---------------------|
-| preprod  | `develop`          | push a `develop`         | No                  |
-| prod     | `main`             | merge a `main` (vía PR)  | Opcional (ver §3)   |
+| Entorno  | Disparador de despliegue  | Cuándo se ejecuta                    | Requiere aprobación |
+|----------|---------------------------|--------------------------------------|---------------------|
+| preprod  | push a `develop`          | al mergear una PR a `develop`        | No                  |
+| prod     | push de tag `vX.Y.Z`      | al publicar un release desde develop | Opcional (ver §3)   |
 
-- La rama **`develop`** es el entorno de integración/pruebas.
-- La rama **`main`** es producción y está **protegida** (solo se actualiza mediante PR con CI en verde).
+- La rama **`develop`** es el entorno de integración/pruebas (preproducción).
+- **Producción** se despliega creando un **tag `v*`** sobre `develop` (p. ej. `v1.2.0`). El tag dispara el workflow `deploy-prod`.
+- La rama **`main`** es la rama estable final: periódicamente se sincroniza con `develop` vía PR (sin disparar despliegues).
 
 ## 2. Configuración ya realizada en GitHub
 
 - Entornos creados: `preprod` y `prod` (Settings → Environments).
-- `prod` restringido: solo se puede desplegar desde `main` (deployment branch policy).
+- `prod` restringido: solo se puede desplegar desde tags con patrón `v*` (deployment branch/tag policy).
 - Secreto `API_KEY` en cada entorno (la misma clave que exige el header `X-API-Key`).
 
 ### Comprobar secretos por entorno
@@ -75,14 +76,15 @@ name: Continuous Deployment
 
 on:
   push:
-    branches: [main, develop]
+    branches: [develop]
+    tags: ['v*']
 
 permissions:
   contents: read
 
 jobs:
   deploy-preprod:
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref_type == 'branch'
     runs-on: ubuntu-latest
     environment: preprod
     steps:
@@ -99,11 +101,12 @@ jobs:
             cd /opt/sync_task
             echo "API_KEY=${{ secrets.API_KEY }}" > .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            git pull origin develop
+            git fetch origin
+            git checkout ${{ github.ref_name }}
             docker compose up -d --build
 
   deploy-prod:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment: prod
     steps:
@@ -120,7 +123,8 @@ jobs:
             cd /opt/sync_task
             echo "API_KEY=${{ secrets.API_KEY }}" > .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            git pull origin main
+            git fetch origin --tags
+            git checkout ${{ github.ref_name }}
             docker compose up -d --build
 ```
 
@@ -134,13 +138,17 @@ jobs:
 4. Verifica en la pestaña **Actions** que el despliegue acaba en verde.
 5. Prueba contra la URL de preprod (clave: `API_KEY` de ese entorno).
 
-### Producción (desde `main`)
+### Producción (release tag desde `develop`)
 
-1. Cuando `develop` esté estable, crea una PR de `develop` → `main`.
-2. El CI (`Build y test`) debe pasar antes de mergear.
-3. Mergea → se dispara `deploy-prod`.
-4. Si hay `Required reviewers` en `prod`, aprueba la ejecución desde la pestaña **Actions** → el job en espera.
-5. Verifica la URL de producción.
+1. Cuando `develop` esté estable y probado en preprod, ejecuta el script de release desde `develop`:
+   ```powershell
+   .\scripts\release.ps1 -Version 1.2.0
+   ```
+   El script hace `git checkout develop`, actualiza con `origin`, crea el tag anotado `v1.2.0` y lo sube.
+2. El push del tag dispara `deploy-prod` (solo se permiten tags `v*` por la política del entorno `prod`).
+3. Si hay `Required reviewers` en `prod`, aprueba la ejecución desde la pestaña **Actions** → el job en espera.
+4. Verifica la URL de producción.
+5. Opcional: sincroniza `main` con `develop` vía PR para dejar la rama estable al día.
 
 ## 7. Verificación tras desplegar
 
@@ -158,11 +166,12 @@ También puedes usar Bruno: selecciona el entorno `Preprod` o `Prod` en la esqui
 
 GitHub Actions no gestiona rollback de forma nativa. Opciones:
 
-- **Revert del merge**: `git revert <sha>` en `develop`/`main` vía PR → el workflow redeshiega la versión anterior.
+- **Revert del tag**: borra el tag de la rama y vuelve a desplegar el anterior con un nuevo tag. P. ej. `git push --delete origin v1.2.0`.
 - **Tag previo de la imagen**: si la imagen Docker se versiona (`:vX.Y.Z`), despliega el tag anterior con `docker compose up -d --build` apuntando a ese tag.
 
 ## 9. Notas importantes
 
 - `main` está protegido: no se puede hacer push directo, todo entra por PR con CI verde.
+- Producción solo se despliega por **tags `v*`**: la política del entorno `prod` bloquea cualquier otro trigger.
 - El healthcheck de Docker envía `X-API-Key: dev-key-123`; si cambias `API_KEY` en el entorno, actualiza también esa línea en `docker-compose.yml`.
 - Cada entorno usa la misma imagen y el mismo código, solo cambian las **variables y secretos** (API key, BD, dominio).
