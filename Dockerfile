@@ -14,7 +14,7 @@ COPY src src
 RUN mvn clean package -DskipTests
 
 # Usar Java 21 como imagen base para runtime
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 WORKDIR /app
 
