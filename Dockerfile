@@ -1,5 +1,5 @@
 # Usar maven como imagen base para compilar
-FROM maven:3-eclipse-temurin-26 AS builder
+FROM maven:3-eclipse-temurin-27 AS builder
 
 WORKDIR /app
 
